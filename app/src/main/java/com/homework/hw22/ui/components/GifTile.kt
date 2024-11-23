@@ -4,12 +4,9 @@ import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -29,12 +26,7 @@ fun GifTile(context: Context, gif: String) {
         }
         .build()
 
-    return Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Image(
+    return Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context).data(data = gif).apply(block = {
                     size(Size.ORIGINAL)
@@ -44,5 +36,4 @@ fun GifTile(context: Context, gif: String) {
             contentDescription = null,
             modifier = Modifier.fillMaxWidth(),
         )
-    }
 }
