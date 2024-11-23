@@ -1,4 +1,4 @@
-package com.homework.hw22.data
+package com.homework.hw22.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

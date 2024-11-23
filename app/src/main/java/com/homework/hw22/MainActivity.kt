@@ -9,19 +9,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.homework.hw22.data.GifListItem
 import com.homework.hw22.ui.components.ErrorTile
 import com.homework.hw22.ui.components.GifTile
 import com.homework.hw22.ui.components.LoadButton
@@ -29,48 +30,53 @@ import com.homework.hw22.ui.components.LoadButton
 class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
-        var gif by remember { mutableStateOf("") }
-        var error by remember { mutableStateOf(false) }
-        var loading by remember { mutableStateOf(false) }
+        val gifs = remember { mutableStateListOf<GifListItem>() }
 
         val context = LocalContext.current
-        val onErrorUpdate = { e: Boolean -> error = e }
-        val onLoadingUpdate = { l: Boolean -> loading = l }
-        val onGifUpdate = { g: String -> gif = g }
+        val onStartLoading = { val res = gifs.add(GifListItem("", error = false, loading = false)) }
+        val onErrorUpdate = { index: Int, e: Boolean -> gifs[index] = gifs[index].copy(error = e) }
+        val onLoadingUpdate = { index: Int, l: Boolean -> gifs[index] = gifs[index].copy(loading = l) }
+        val onGifUpdate = { index: Int, g: String -> gifs[index] = gifs[index].copy(url = g) }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (loading) {
-                CircularProgressIndicator()
-                Spacer(modifier = Modifier.height(16.dp))
-            } else if (error) {
-                ErrorTile(
-                    onErrorUpdate,
-                    onLoadingUpdate,
-                    onGifUpdate
-                )
-            } else if (gif != "") {
-                GifTile(context, gif = gif)
-                Text(
-                    text = gif,
-                    color = if (error) Color.Red else Color.Black,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+            LazyColumn {
+                itemsIndexed(gifs) { index, gif  ->
+                    if (gif.loading) {
+                        CircularProgressIndicator(modifier = Modifier.size(40.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                    } else if (gif.error) {
+                        ErrorTile(
+                            index,
+                            onErrorUpdate,
+                            onLoadingUpdate,
+                            onGifUpdate
+                        )
+                    } else if (gif.url.isNotEmpty()) {
+                        GifTile(context, gif = gif.url)
+                        Text(
+                            text = gif.url,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
+                }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LoadButton(
-                onErrorUpdate,
-                onLoadingUpdate,
-                onGifUpdate
-            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LoadButton(
+            gifs.size,
+            onErrorUpdate,
+            onLoadingUpdate,
+            onGifUpdate,
+            onStartLoading,
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

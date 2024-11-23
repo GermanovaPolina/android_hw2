@@ -1,4 +1,4 @@
-package com.homework.hw22.data
+package com.homework.hw22.api
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -19,17 +19,22 @@ class RetrofitController(api: String) : RequestController {
     private val gifApi = retrofit.create(GifApi::class.java)
 
     override suspend fun requestGif(): Result {
-        val response = gifApi.gif(
-            "2cq4m7p1zvSWMd1Q6EWJcNdBo28D7HSa", "arcane",
-            xRapidApiKey = "530bd50c9fmsheb57b4ae0b6ba3ap1b5e8ejsn3026d0384a6f",
-            xRapidApiHost = "giphy.p.rapidapi.com"
-        )
-        return if (response.isSuccessful) {
-            response.body()?.let {
-                Result.Ok(it)
-            } ?: Result.Error("No gif")
-        } else {
-            Result.Error(response.code().toString())
+        try {
+            val response = gifApi.gif(
+                "2cq4m7p1zvSWMd1Q6EWJcNdBo28D7HSa", "horror",
+                xRapidApiKey = "530bd50c9fmsheb57b4ae0b6ba3ap1b5e8ejsn3026d0384a6f",
+                xRapidApiHost = "giphy.p.rapidapi.com"
+            )
+
+            return if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.Ok(it)
+                } ?: Result.Error("No gif")
+            } else {
+                Result.Error(response.code().toString())
+            }
+        } catch (e: Exception) {
+            return Result.Error("Unexpected error");
         }
     }
 }

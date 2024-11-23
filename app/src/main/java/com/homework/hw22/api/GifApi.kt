@@ -1,4 +1,4 @@
-package com.homework.hw22.data
+package com.homework.hw22.api
 
 import retrofit2.Response
 import retrofit2.http.GET

@@ -17,9 +17,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ErrorTile(
-    onErrorUpdate: (Boolean) -> Unit,
-    onLoadingUpdate: (Boolean) -> Unit,
-    onGifUpdate: (String) -> Unit,
+    index: Int,
+    onErrorUpdate: (Int, Boolean) -> Unit,
+    onLoadingUpdate: (Int, Boolean) -> Unit,
+    onGifUpdate: (Int, String) -> Unit,
 ) {
     return Card(
         modifier = Modifier
@@ -30,8 +31,6 @@ fun ErrorTile(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Произошла ошибка",
@@ -39,10 +38,13 @@ fun ErrorTile(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             LoadButton(
+                index = index,
                 onErrorUpdate = onErrorUpdate,
                 onLoadingUpdate = onLoadingUpdate,
                 onGifUpdate = onGifUpdate,
-                text = "Перезагрузить гифку"
+                onStartLoading = {},
+                text = "Перезагрузить гифку",
+                alignment = Alignment.Center,
             )
         }
     }
