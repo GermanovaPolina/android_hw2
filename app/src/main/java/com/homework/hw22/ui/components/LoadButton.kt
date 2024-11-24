@@ -1,7 +1,5 @@
 package com.homework.hw22.ui.components
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
@@ -10,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.homework.hw22.MainActivity.Companion.API
-import com.homework.hw22.api.Result
 import com.homework.hw22.api.RetrofitController
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +21,6 @@ import com.homework.hw22.api.ByteResult
 
 suspend fun processGifResult(gifResult: ByteResult, callback: (String, Boolean) -> Unit) {
     withContext(Dispatchers.IO) {
-        Log.i("MainActivity", "This is an info message")
         when (gifResult) {
             is ByteResult.ByteOk -> {
                 callback(gifResult.path, false)

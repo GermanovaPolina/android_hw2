@@ -26,7 +26,7 @@ class RetrofitController(api: String) : RequestController {
     private suspend fun requestGifUrl(): Result {
         try {
             val response = gifApi.gif(
-                "2cq4m7p1zvSWMd1Q6EWJcNdBo28D7HSa", "metro",
+                "2cq4m7p1zvSWMd1Q6EWJcNdBo28D7HSa", "lara-croft-game",
                 xRapidApiKey = "530bd50c9fmsheb57b4ae0b6ba3ap1b5e8ejsn3026d0384a6f",
                 xRapidApiHost = "giphy.p.rapidapi.com"
             )

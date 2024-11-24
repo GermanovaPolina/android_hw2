@@ -36,15 +36,10 @@ fun GifTile(context: Context, gifPath: String) {
 
     SubcomposeAsyncImage(
         model = gifFile,
-        contentDescription = null,
+        contentDescription = gifPath,
         imageLoader = imageLoader,
         loading = {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CircularProgressIndicator(modifier = Modifier.size(40.dp))
-            }
+            CircularProgressIndicator(modifier = Modifier.size(40.dp))
         },
         contentScale = ContentScale.FillWidth,
         modifier = Modifier.fillMaxWidth()

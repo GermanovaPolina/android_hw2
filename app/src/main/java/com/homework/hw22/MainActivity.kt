@@ -1,7 +1,6 @@
 package com.homework.hw22
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -34,7 +32,6 @@ class MainActivity : ComponentActivity() {
     fun MainScreen() {
         val context = LocalContext.current
         val gifs = remember { mutableStateListOf<GifListItem>().apply { addAll(getGifFiles(context)) } }
-        Log.i("MainActivity", gifs.toString())
 
         val onStartLoading = { val res = gifs.add(GifListItem(path = "", error = false, loading = false)) }
         val onErrorUpdate = { index: Int, e: Boolean -> gifs[index] = gifs[index].copy(error = e) }
@@ -48,10 +45,14 @@ class MainActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LazyColumn {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 itemsIndexed(gifs) { index, gif  ->
                     if (gif.loading) {
-                        CircularProgressIndicator(modifier = Modifier.size(40.dp))
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp)
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
                     } else if (gif.error) {
                         ErrorTile(
@@ -62,10 +63,6 @@ class MainActivity : ComponentActivity() {
                         )
                     } else if (gif.path.isNotEmpty()) {
                         GifTile(context, gifPath = gif.path)
-                        Text(
-                            text = gif.path,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
                     }
                 }
             }
