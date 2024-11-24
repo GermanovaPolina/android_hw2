@@ -1,15 +1,21 @@
 package com.homework.hw22.api
 
+import android.content.Context
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface RequestController {
-    suspend fun requestGif(): Result
+    suspend fun getGif(context: Context): ByteResult
 }
 
 sealed interface Result {
     data class Ok(val gif: Gif) : Result
     data class Error(val error: String) : Result
+}
+
+sealed interface ByteResult {
+    data class ByteOk(val path: String) : ByteResult
+    data class ByteError(val error: String) : ByteResult
 }
 
 @Serializable
@@ -24,6 +30,7 @@ data class Images(
 
 @Serializable
 data class Data(
+    @SerialName("id") val id: String,
     @SerialName("images") val images: Images,
 )
 

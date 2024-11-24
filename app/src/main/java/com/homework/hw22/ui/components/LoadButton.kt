@@ -1,5 +1,6 @@
 package com.homework.hw22.ui.components
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
@@ -18,15 +19,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.platform.LocalContext
+import com.homework.hw22.api.ByteResult
 
-suspend fun processGifResult(gifResult: Result, callback: (String, Boolean) -> Unit) {
+suspend fun processGifResult(gifResult: ByteResult, callback: (String, Boolean) -> Unit) {
     withContext(Dispatchers.IO) {
         Log.i("MainActivity", "This is an info message")
         when (gifResult) {
-            is Result.Ok -> {
-                callback(gifResult.gif.data.images.original.url, false)
+            is ByteResult.ByteOk -> {
+                callback(gifResult.path, false)
             }
-            is Result.Error -> {
+            is ByteResult.ByteError -> {
                 callback("", true)
             }
         }
@@ -43,6 +46,7 @@ fun LoadButton(
     text: String = "Загрузить гифку",
     alignment: Alignment = Alignment.BottomCenter,
 ) {
+    val context = LocalContext.current
     val exceptionHandler = CoroutineExceptionHandler { _, e ->
         onErrorUpdate(index, true)
     }
@@ -64,7 +68,7 @@ fun LoadButton(
                     onStartLoading()
                     onLoadingUpdate(index, true)
                     onErrorUpdate(index, false)
-                    val gifResult = retrofitController.requestGif()
+                    val gifResult = retrofitController.getGif(context)
                     processGifResult(gifResult) { newGif, newError ->
                         onGifUpdate(index, newGif)
                         onErrorUpdate(index, newError)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -15,9 +16,14 @@ import coil.ImageLoader
 import coil.compose.SubcomposeAsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import java.io.File
 
 @Composable
-fun GifTile(context: Context, gif: String) {
+fun GifTile(context: Context, gifPath: String) {
+    val cacheDir = context.cacheDir
+    val gifsDir = File(cacheDir, "gifs")
+    val gifFile = remember { File(gifsDir, gifPath) }
+
     val imageLoader = ImageLoader.Builder(context)
         .components {
             if (SDK_INT >= 28) {
@@ -29,7 +35,7 @@ fun GifTile(context: Context, gif: String) {
         .build()
 
     SubcomposeAsyncImage(
-        model = gif,
+        model = gifFile,
         contentDescription = null,
         imageLoader = imageLoader,
         loading = {

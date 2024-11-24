@@ -1,6 +1,7 @@
 package com.homework.hw22
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -26,17 +27,19 @@ import com.homework.hw22.data.GifListItem
 import com.homework.hw22.ui.components.ErrorTile
 import com.homework.hw22.ui.components.GifTile
 import com.homework.hw22.ui.components.LoadButton
+import com.homework.hw22.utils.getGifFiles
 
 class MainActivity : ComponentActivity() {
     @Composable
     fun MainScreen() {
-        val gifs = remember { mutableStateListOf<GifListItem>() }
-
         val context = LocalContext.current
-        val onStartLoading = { val res = gifs.add(GifListItem("", error = false, loading = false)) }
+        val gifs = remember { mutableStateListOf<GifListItem>().apply { addAll(getGifFiles(context)) } }
+        Log.i("MainActivity", gifs.toString())
+
+        val onStartLoading = { val res = gifs.add(GifListItem(path = "", error = false, loading = false)) }
         val onErrorUpdate = { index: Int, e: Boolean -> gifs[index] = gifs[index].copy(error = e) }
         val onLoadingUpdate = { index: Int, l: Boolean -> gifs[index] = gifs[index].copy(loading = l) }
-        val onGifUpdate = { index: Int, g: String -> gifs[index] = gifs[index].copy(url = g) }
+        val onGifUpdate = { index: Int, g: String -> gifs[index] = gifs[index].copy(path = g) }
 
         Column(
             modifier = Modifier
@@ -57,10 +60,10 @@ class MainActivity : ComponentActivity() {
                             onLoadingUpdate,
                             onGifUpdate
                         )
-                    } else if (gif.url.isNotEmpty()) {
-                        GifTile(context, gif = gif.url)
+                    } else if (gif.path.isNotEmpty()) {
+                        GifTile(context, gifPath = gif.path)
                         Text(
-                            text = gif.url,
+                            text = gif.path,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                     }
